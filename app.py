@@ -1,6 +1,7 @@
 from flask import *
 from backend import elgamal
-import json
+import os
+import glob
 from werkzeug.utils import secure_filename
 import os
 
@@ -9,6 +10,11 @@ app.secret_key = os.urandom(24)
 ALLOWED_EXTENSIONS_CITRA = set(['png', 'bmp'])
 #ALLOWED_EXTENSIONS_VIDEO = set(['avi'])
 app.config["UPLOAD_FOLDER"]="dump"
+
+def clear_folder():
+    files = glob.glob('dump/*')
+    for f in files:
+        os.remove(f)
 
 def allowed_file(filename):
     if('.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS_CITRA):
@@ -35,11 +41,13 @@ def download(filename):
 
 @app.route('/')
 def home():
+    clear_folder()
     return render_template("index.html")
 
 #ElGamal
 @app.route('/image/enkripsi')
 def elgamal_enkripsi():
+    clear_folder()
     return render_template("elgamal_enkripsi.html")
 
 @app.route('/image/enkripsi', methods=["POST"])
@@ -75,6 +83,7 @@ def elgamal_enkripsi_post():
 
 @app.route('/image/dekripsi')
 def elgamal_dekripsi():
+    clear_folder()
     return render_template("elgamal_dekripsi.html")
 
 @app.route('/image/dekripsi', methods=["POST"])
@@ -98,6 +107,7 @@ def elgamal_dekripsi_post():
 
 @app.route('/image/genKey')
 def elgamal_genKey():
+    clear_folder()
     return render_template("elgamal_key.html")
 
 @app.route('/image/genKey', methods=["POST"])

@@ -43,7 +43,6 @@ def enkripsi(pesan, k, y, g, p, f):
         for huruf in pesan:
             hasil += str(enkripsi_huruf(ord(huruf), k, y, g, p))
             hasil += " "
-        #print("Hasil:",hasil)
         respons = stego_image.encrypt(os.path.join(upload_folder ,f), 
                                     hasil, 
                                     os.path.join(upload_folder,"enc-"+f))
@@ -56,14 +55,8 @@ def dekripsi_huruf(a, b, x, p):
 def dekripsi(cipher_file, x, p):
     hasil = ""
     pesan_stego = str(stego_image.decrypt(cipher_file))
-    print(pesan_stego)
     pesan = pesan_stego.split()
-    print(pesan)
     for i in range (0, len(pesan), 2):
-        # try:
-        #     angkanya = dekripsi_huruf(int(pesan[i]), int(pesan[i+1]), x, p)
-        # except ValueError:
-        #     continue
         angkanya = dekripsi_huruf(int(pesan[i]), int(pesan[i+1]), x, p)
         hasil += chr(angkanya)
     return hasil

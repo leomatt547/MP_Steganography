@@ -22,7 +22,6 @@ def bacaPesan(pesan):
 def stegoing(gambar, pesan):
     pesan = bacaPesan(pesan)
     pixel = iter(gambar)
-    #print("baca pesan",pesan)
 
     for i in range(len(pesan)):
         tempgambar = [value for value in pixel.__next__()[:3] +
@@ -62,11 +61,6 @@ def stegoing(gambar, pesan):
 
 def encrypt(file, pesan, output):
     img = Image.open(file, 'r')
-    #print(str(os.path.getsize(file)))
-    # if (os.path.getsize(pesan) <= 0):
-    #     raise ValueError('File data yang ingin disisipkan kosong')
-    # elif(os.path.getsize(pesan) > 0.001 * os.path.getsize(file)):
-    #     raise ValueError('Maaf, file data yang ingin disisipkan lebih besar dari file stegonya')
     if (len(pesan) <= 0):
         raise ValueError('File data yang ingin disisipkan kosong')
     elif(len(pesan) > os.path.getsize(file)):
@@ -86,8 +80,7 @@ def encrypt(file, pesan, output):
             x += 1
     imgbaru.convert('RGB').save(output)
     strnya = "Nilai PSNR adalah: " + str(psnr(cv2.imread(file),cv2.imread(output)))
-    print(strnya)
-    return str(output)
+    return str(strnya)
 
 def psnr(imageawal,imageakhir):
     rms = np.mean((imageawal - imageakhir) ** 2)
