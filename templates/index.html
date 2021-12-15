@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Lato", sans-serif;
+      }
+
+      /* Style the tab */
+      .tab {
+        float: left;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+        width: 20%;
+        height: 300px;
+      }
+
+      /* Style the buttons inside the tab */
+      .tab button {
+        display: block;
+        background-color: inherit;
+        color: black;
+        padding: 22px 16px;
+        width: 100%;
+        border: none;
+        outline: none;
+        text-align: left;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 17px;
+      }
+
+      /* Change background color of buttons on hover */
+      .tab button:hover {
+        background-color: #ddd;
+      }
+
+      /* Create an active/current "tab button" class */
+      .tab button.active {
+        background-color: #ccc;
+      }
+
+      /* Style the tab content */
+      .tabcontent {
+        float: left;
+        padding: 0px 12px;
+        border: 1px solid #ccc;
+        width: 80%;
+        border-left: none;
+        height: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>UAV Mission Planner Secret Hiding</h2>
+    <h3>Hiding with Elgamal Public Key Steganography</h3>
+    <p>Klik pilihan Anda di bawah ini</p>
+
+    <div class="tab">
+      <button class="tablinks" onclick="window.location = '../image/enkripsi';">
+        Penyisipan dalam Gambar
+      </button>
+      <button class="tablinks" onclick="window.location = '../video/enkripsi';">
+        Penyisipan dalam Video
+      </button>
+      <button class="tablinks" onclick="window.location = '../audio/enkripsi';">
+        Penyisipan dalam Audio
+      </button>
+      <button class="tablinks" onclick="window.location = '../file/enkripsi';">
+        Penyisipan dalam File
+      </button>
+    </div>
+  </body>
+</html>

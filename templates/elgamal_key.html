@@ -1,0 +1,163 @@
+{% extends "layout.html" %}
+{% block head %}
+<script>
+function download_private() {
+    text = document.getElementById("result-private").value
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', "kunci_private.pri");
+
+    if (document.createEvent) {
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
+function download_public() {
+    text = document.getElementById("result-public").value
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', "kunci_public.pub");
+
+    if (document.createEvent) {
+      var event = document.createEvent('MouseEvents');
+      event.initEvent('click', true, true);
+      pom.dispatchEvent(event);
+    }
+    else {
+      pom.click();
+    }
+}
+</script>
+{% endblock %}
+{% block content %}
+<h3>Pembangkitan Kunci ElGamal</h3>
+{% if encrypt==False and hasil!="" %}
+<div id="emsg">
+  {{hasil}}
+</div>
+{% endif %}
+{% if encrypt %}
+<div id="result-group" class="form-group">
+  <label for="result-public">Kunci Publik (y,g,p)</label>
+  <div>
+    {% if encrypt %}
+    <textarea readonly
+      id="result-public"
+      name="result-public"
+      rows="2"
+      cols="70">{{kunci_public}}</textarea>
+    {% else %}
+    <textarea readonly
+      id="result-public"
+      name="result-public"
+      rows="2"
+      cols="70"></textarea>
+    {% endif %}
+  </div>
+  {% if encrypt %}
+    <button id="button-public" 
+    type="submit" 
+    value="submit" 
+    class="btn btn-success"
+    onclick = "download_public()">
+  {% else %}
+    <button id="button-public" 
+    type="submit" 
+    value="submit" 
+    disabled
+    class="btn btn-success" >
+  {% endif %}
+    Unduh Kunci Publik
+  </button>
+</div>
+<div id="result-group" class="form-group">
+  <label for="result-private">Kunci Privat (x, p)</label>
+  <div>
+    {% if encrypt %}
+    <textarea readonly
+      id="result-private"
+      name="result-private"
+      rows="2"
+      cols="70">{{kunci_private}}</textarea>
+    {% else %}
+    <textarea readonly
+      id="result-private"
+      name="result-private"
+      rows="2"
+      cols="70"></textarea>
+    {% endif %}
+  </div>
+  {% if encrypt %}
+    <button id="button-private" 
+    type="submit" 
+    value="submit" 
+    class="btn btn-success"
+    onclick = "download_private()">
+  {% else %}
+    <button id="button-private" 
+    type="submit" 
+    value="submit" 
+    disabled
+    class="btn btn-success" >
+  {% endif %}
+    Unduh Kunci Private
+  </button>
+</div>
+{% else %}
+<div class="col-sm-6 col-sm-offset-3">
+  <form id="form" action="./genKey" method="POST" 
+  enctype="multipart/form-data">
+    <div id="angka_p-group" class="form-group">
+        <label for="angka_p">Nilai P</label>
+        <input
+        required
+          type="number"
+          class="form-control"
+          id="angka_p"
+          name="angka_p"
+          placeholder="Masukkan Nilai P (prima) yang lebih besar dari 255"
+          min="0"
+          max="99999999"
+        />
+      </div>
+      
+      <div id="angka_g-group" class="form-group">
+      <label for="angka_g">Nilai G</label>
+      <input
+      required
+      type="number"
+        class="form-control"
+        id="angka_g"
+        name="angka_g"
+        placeholder="Masukkan Nilai G"
+        min="0"
+        max="99999999"
+        />
+      </div>
+      
+      <div id="angka_x-group" class="form-group">
+        <label for="angka_x">Nilai X</label>
+        <input
+        required
+          type="number"
+          class="form-control"
+          id="angka_x"
+          name="angka_x"
+          placeholder="Masukkan Nilai X"
+          min="0"
+          max="99999999"
+        />
+      </div>
+
+      <button type="submit" value="submit" class="btn btn-success" onclick="submitaja()">
+      Submit
+    </button>
+    </form>
+  </div>
+{% endif %}
+
+{% endblock %}
