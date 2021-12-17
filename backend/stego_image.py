@@ -5,19 +5,11 @@ import numpy as np
 import cv2
 import os
 
-#python acak.py encrypt ./lena.bmp 1leomaumakan
-#python acak.py decrypt ./stegonya.png
 def bacaPesan(pesan):
     A = []
     for i in pesan:
         A.append(format(ord(i), '08b'))
     return A
-    # f = open(input_file,'rb')
-    # l = f.read(1)
-    # while l:
-    #     A.append(format(int.from_bytes(l, "big"), '08b'))
-    #     l = f.read(1)
-    # f.close()
 
 def stegoing(gambar, pesan):
     pesan = bacaPesan(pesan)
@@ -127,7 +119,6 @@ if __name__ == '__main__':
         "decrypt", help=decrypt.__doc__
     )
     decrypt_parser.add_argument("file_input", help='Input Stego File')
-    #parser.add_argument("command", help='Input command encrypt/decrypt')
     args = parser.parse_args()
     if(args.command == "encrypt"):
         encrypt(args.file_input, args.file_pesan, args.output)

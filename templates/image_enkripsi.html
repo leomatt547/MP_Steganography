@@ -44,27 +44,11 @@
   };
 </script>
 {% endblock %} {% block content %}
-<h3>Enkripsi ElGamal</h3>
+<h3>Enkripsi Steganografi Kunci Publik Gambar</h3>
 {% if encrypt==False and hasil!="" %}
 <div id="emsg">{{hasil}}</div>
 {% endif %} {% if encrypt %}
 <div id="result-group" class="form-group">
-  <!--label for="result-public">Hasil Enkripsi</label>
-  <div>
-    {% if encrypt %}
-    <textarea readonly
-      id="result-public"
-      name="result-public"
-      rows="5"
-      cols="70">{{hasil}}</textarea>
-    {% else %}
-    <textarea readonly
-      id="result-public"
-      name="result-public"
-      rows="5"
-      cols="70"></textarea>
-    {% endif %}
-  </div-->
   {% if encrypt %}
     <p>File sudah dienkripsi.</p>
     <p>Nilai PSNR: {{hasil}}</p>

@@ -65,7 +65,6 @@ if __name__ == "__main__":
     p = 2357
     g = 2
     x = 1751
-    #print("pangkat", (5652**30.0) % (77**2))
     print(getKunci(p,g,x))
     kunci = getKunci(p,g,x)
     pesannya = "HMMM"
