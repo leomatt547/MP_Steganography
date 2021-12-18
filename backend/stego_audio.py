@@ -1,19 +1,20 @@
+import wave
+
 from math import log10
 import argparse
 import PIL.Image as Image
 import numpy as np
 import cv2
+import os
 
-#python acak.py encrypt ./lena.bmp 1leomaumakan
-#python acak.py decrypt ./stegonya.png
 def bacaPesan(pesan):
     A = []
     for i in pesan:
         A.append(format(ord(i), '08b'))
     return A
 
-def stegoing(gambar, key):
-    pesan = bacaPesan(key)
+def stegoing(gambar, pesan):
+    pesan = bacaPesan(pesan)
     pixel = iter(gambar)
 
     for i in range(len(pesan)):
@@ -53,54 +54,40 @@ def stegoing(gambar, key):
         yield tempgambar[6:9]
 
 def encrypt(file, pesan, output):
-    img = Image.open(file, 'r')
-    if (len(pesan) == 0):
-        raise ValueError('Data is empty')
-    
-    imgbaru = img.copy()
-    panjang = imgbaru.size[0]
-    lebar = imgbaru.size[1]
-    (x, y) = (0, 0)
+    perubahan = 0
+    audio = wave.open(file,mode="rb")
+    arr_bytes = bytearray(list(audio.readframes(audio.getnframes())))
+    string = pesan + int((len(arr_bytes)-(len(pesan)*8*8))/8) * '#'
+    bits = list(map(int, ''.join([bin(ord(i)).lstrip('0b').rjust(8,'0') for i in string])))
+    for i, bit in enumerate(bits):
+        arr_bytes[i] = (arr_bytes[i] & 254) | bit
+        perubahan += 1
+    arr_bytes_baru = bytes(arr_bytes)
+    audiobaru =  wave.open(output, 'wb')
+    audiobaru.setparams(audio.getparams())
+    audiobaru.writeframes(arr_bytes_baru)
+    audiobaru.close()
+    audio.close()
 
-    for pixel in stegoing(imgbaru.getdata(), pesan):
-        imgbaru.putpixel((x, y), pixel)
-        if (x == panjang - 1):
-            x = 0
-            y += 1
-        else:
-            x += 1
-    imgbaru.convert('RGB').save(output)
-    strnya = "Nilai PSNR adalah:" + str(psnr(cv2.imread(file),cv2.imread(output)))
-    return strnya
+    if (perubahan>0):
+        strnya = "Nilai PSNR adalah: " + str(psnr(perubahan, len(arr_bytes_baru)))
+    else:
+        strnya = -2
+    return str(strnya)
 
-def psnr(imageawal,imageakhir):
-    rms = np.mean((imageawal - imageakhir) ** 2)
-    return 20*log10(255/rms)
+def psnr(perubahan,jumlah_frame):
+    rms = perubahan/jumlah_frame
+    return 20*log10(8/rms)
 
 def decrypt(file):
-    img = Image.open(file, 'r')
-    #print("file = ",file)
-    pesan = ''
-
-    imgdata = iter(img.getdata())
- 
-    while (True):
-        pixel = [value for value in imgdata.__next__()[:3] +
-                                imgdata.__next__()[:3] +
-                                imgdata.__next__()[:3]]
- 
-        # string of binary data
-        teksbin = ''
- 
-        for i in pixel[:8]:
-            if (i % 2 == 0):
-                teksbin += '0'
-            else:
-                teksbin += '1'
- 
-        pesan += chr(int(teksbin, 2))
-        if (pixel[-1] % 2 != 0):
-            return pesan
+    pesan = ""
+    audio = wave.open(file, mode='rb')
+    arr_bytes = bytearray(list(audio.readframes(audio.getnframes())))
+    bits = [arr_bytes[i] & 1 for i in range(len(arr_bytes))]
+    string = "".join(chr(int("".join(map(str,bits[i:i+8])),2)) for i in range(0,len(bits),8))
+    pesan = string.split("###")[0]
+    audio.close()	
+    return pesan
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter,)
@@ -110,14 +97,13 @@ if __name__ == '__main__':
         "encrypt", help=encrypt.__doc__
     )
     encrypt_parser.add_argument("file_input", help='Input Plain File')
-    encrypt_parser.add_argument("pesan", help='Input Plain File')
-    encrypt_parser.add_argument("output", help='Masukkan nama dir output')
+    encrypt_parser.add_argument("pesan", help='Input File yang ingin disisipkan')
+    encrypt_parser.add_argument("output", help='Masukkan nama dir output stego')
 
     decrypt_parser = subparsers.add_parser(
         "decrypt", help=decrypt.__doc__
     )
-    decrypt_parser.add_argument("file_input", help='Input Plain File')
-    #parser.add_argument("command", help='Input command encrypt/decrypt')
+    decrypt_parser.add_argument("file_input", help='Input Stego File')
     args = parser.parse_args()
     if(args.command == "encrypt"):
         encrypt(args.file_input, args.pesan, args.output)

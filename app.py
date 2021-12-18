@@ -1,5 +1,5 @@
 from flask import *
-from backend import elgamal_image, elgamal_video
+from backend import elgamal_image, elgamal_video, elgamal_audio
 import os
 import glob
 from werkzeug.utils import secure_filename
@@ -219,6 +219,88 @@ def video_genKey_post():
                 kunci_private=str(str(response[2])+" "+str(response[3])))
         else:
             return render_template("video_key.html", encrypt=False, \
+                hasil=response)
+
+#---------------------------------STEGO AUDIO--------------------------------------------
+@app.route('/audio/enkripsi')
+def audio_enkripsi():
+    clear_folder()
+    return render_template("audio_enkripsi.html")
+
+@app.route('/audio/enkripsi', methods=["POST"])
+def audio_enkripsi_post():
+    if (request.method == 'POST'):
+        plain = str(request.form.get("plain"))
+        f = request.files['stego-file']
+        if (f and allowed_file(f.filename)=="audio"):
+            angka_k = int(request.form.get("angka_k"))
+            angka_g = int(request.form.get("angka_g"))
+            angka_y = int(request.form.get("angka_y"))
+            angka_p = int(request.form.get("angka_p"))
+            filename = secure_filename(f.filename)
+            f.save(os.path.join(app.config["UPLOAD_FOLDER"] ,filename))
+            response = elgamal_audio.enkripsi(plain, angka_k, angka_g, angka_y, angka_p, filename)
+            print("responsenya",response)
+            if(response == -1 or (angka_k < 0) or (angka_k >= angka_p)):
+                hasil = "Maaf, pilih angka k yang lain di antara 0 hingga "+ str(angka_p)
+                return render_template("audio_enkripsi.html",\
+                    encrypt=False\
+                    , hasil=hasil)
+            else:
+                return render_template("audio_enkripsi.html",\
+                    encrypt=True
+                    , filename = str("enc-"+filename)\
+                    , hasil = response)
+        else:
+            hasil = "Maaf, pilih stego file yang lain"
+            return render_template("audio_enkripsi.html",\
+                    encrypt=False\
+                    , hasil=hasil)
+
+@app.route('/audio/dekripsi')
+def audio_dekripsi():
+    clear_folder()
+    return render_template("audio_dekripsi.html")
+
+@app.route('/audio/dekripsi', methods=["POST"])
+def audio_dekripsi_post():
+    if (request.method == 'POST'):
+        f = request.files['cipher-file']
+        if (f and allowed_file(f.filename)=="audio"):
+            filename = secure_filename(f.filename)
+            f.save(os.path.join(app.config["UPLOAD_FOLDER"] ,filename))
+            angka_x = int(request.form.get("angka_x"))
+            angka_p = int(request.form.get("angka_p"))
+            response = elgamal_audio.dekripsi(filename, angka_x, angka_p)
+            print(response)
+            return render_template("audio_dekripsi.html",\
+                    encrypt=True\
+                    , hasil=response)
+        else:
+            return render_template("audio_dekripsi.html",\
+                    encrypt=False\
+                    , hasil = "Maaf, masukkan stego bertipe gambar dengan format yang valid")
+
+@app.route('/audio/genKey')
+def audio_genKey():
+    clear_folder()
+    return render_template("audio_key.html")
+
+@app.route('/audio/genKey', methods=["POST"])
+def audio_genKey_post():
+    if (request.method == 'POST'):
+        angka_p = int(request.form.get("angka_p"))
+        angka_g = int(request.form.get("angka_g"))
+        angka_x = int(request.form.get("angka_x"))
+        response = elgamal_image.getKunci(angka_p, angka_g, angka_x)
+        print(len(response))
+        if(len(response)==4):
+            return render_template("audio_key.html", \
+                encrypt=True, \
+                kunci_public=str(str(response[0])+" "+str(response[1])+" "+str(response[3])),\
+                kunci_private=str(str(response[2])+" "+str(response[3])))
+        else:
+            return render_template("audio_key.html", encrypt=False, \
                 hasil=response)
 
 

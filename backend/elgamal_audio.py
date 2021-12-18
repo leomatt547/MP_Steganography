@@ -1,4 +1,5 @@
-from backend import stego_video
+from backend import stego_audio
+import os
 
 upload_folder = "dump"
 
@@ -42,10 +43,9 @@ def enkripsi(pesan, k, y, g, p, f):
         for huruf in pesan:
             hasil += str(enkripsi_huruf(ord(huruf), k, y, g, p))
             hasil += " "
-        print(hasil)
-        respons = stego_video.encrypt_driver(upload_folder,
-                                            f,
-                                            hasil)
+        respons = stego_audio.encrypt(os.path.join(upload_folder ,f), 
+                                    hasil, 
+                                    os.path.join(upload_folder,"enc-"+f))
         return respons
 
 def dekripsi_huruf(a, b, x, p):
@@ -54,9 +54,8 @@ def dekripsi_huruf(a, b, x, p):
 
 def dekripsi(cipher_file, x, p):
     hasil = ""
-    pesan_stego = str(stego_video.decrypt_driver(upload_folder, cipher_file))
+    pesan_stego = str(stego_audio.decrypt(cipher_file))
     pesan = pesan_stego.split()
-    print(pesan)
     for i in range (0, len(pesan), 2):
         angkanya = dekripsi_huruf(int(pesan[i]), int(pesan[i+1]), x, p)
         hasil += chr(angkanya)

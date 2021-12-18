@@ -1,0 +1,187 @@
+{% extends "layout.html" %} {% block head %}
+<script type="text/javascript">
+  function download_cipher(filename) {
+    text = document.getElementById("result-public").value;
+    var pom = document.createElement("a");
+    pom.setAttribute("href", "dump/" + str(filename));
+    pom.setAttribute("download", filename);
+
+    if (document.createEvent) {
+      var event = document.createEvent("MouseEvents");
+      event.initEvent("click", true, true);
+      pom.dispatchEvent(event);
+    } else {
+      pom.click();
+    }
+  }
+  window.onload = function () {
+    document.getElementById("file").addEventListener("change", function () {
+      var fr = new FileReader();
+      fr.onload = function () {
+        const g = document.getElementById("angka_g");
+        const y = document.getElementById("angka_y");
+        const p = document.getElementById("angka_p");
+        dataArr = fr.result.split(" ");
+        g.value = dataArr[0];
+        y.value = dataArr[1];
+        p.value = dataArr[2];
+        //g.readOnly = true;
+        //n.readOnly = true;
+      };
+      fr.readAsText(this.files[0]);
+    });
+    document
+      .getElementById("plain-file")
+      .addEventListener("change", function () {
+        var fr2 = new FileReader();
+        fr2.onload = function () {
+          const c = document.getElementById("plain");
+          c.value = fr2.result;
+          //n.readOnly = true;
+        };
+        fr2.readAsText(this.files[0]);
+      });
+  };
+</script>
+{% endblock %} {% block content %}
+<h3>Enkripsi Steganografi Kunci Publik Audio</h3>
+{% if encrypt==False and hasil!="" %}
+<div id="emsg">{{hasil}}</div>
+{% endif %} {% if encrypt %}
+<div id="result-group" class="form-group">
+  {% if encrypt %}
+    <p>File sudah dienkripsi.</p>
+    <p>Nilai PSNR: {{hasil}}</p>
+    <button
+      id="button-cipher"
+      type="button"
+      value="Get Your File"
+      class="btn btn-success"
+      onclick="location.href='/download/{{filename}}'"
+    >
+  {% else %}
+    <button
+      id="button-cipher"
+      type="submit"
+      value="submit"
+      disabled
+      class="btn btn-success"
+    >
+  {% endif %} 
+  Unduh Stego File
+  </button>
+</div>
+{% else %}
+<div class="col-sm-6 col-sm-offset-3">
+  <form
+    id="form"
+    action="/audio/enkripsi"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    <div id="plain-file-group" class="form-group">
+      <label for="file">Masukkan File Waypoints</label>
+      <input
+        type="file"
+        class="form-control"
+        id="plain-file"
+        name="plain-file"
+      />
+    </div>
+    <div id="plain-group" class="form-group">
+      <label for="plain">File Waypoints</label>
+      <textarea
+        readonly
+        required
+        type="text"
+        class="form-control"
+        id="plain"
+        name="plain"
+        placeholder="Isi Waypoints akan ditampilkan di sini"
+        rows="5"
+        cols="70"
+      ></textarea>
+    </div>
+    <div id="stego-file-group" class="form-group">
+      <label for="stego-file">Masukkan File Stego yang akan disisipkan</label>
+      <input
+        required
+        type="file"
+        class="form-control"
+        id="stego-file"
+        name="stego-file"
+      />
+    </div>
+
+    <div id="angka_k-group" class="form-group">
+      <label for="angka_k">Nilai K</label>
+      <input
+        required
+        type="number"
+        class="form-control"
+        id="angka_k"
+        name="angka_k"
+        placeholder="Masukkan Nilai K"
+        min="0"
+        max="99999999"
+      />
+    </div>
+
+    <h4>Kunci Publik</h4>
+    <div id="file-group" class="form-group">
+      <label for="file">Masukkan File Kunci Publik</label>
+      <input type="file" class="form-control" id="file" name="file" />
+    </div>
+    <div id="angka_g-group" class="form-group">
+      <label for="angka_g">Nilai G</label>
+      <input
+        required
+        type="number"
+        class="form-control"
+        id="angka_g"
+        name="angka_g"
+        placeholder="Masukkan Nilai G"
+        min="0"
+        max="99999999"
+      />
+    </div>
+
+    <div id="angka_y-group" class="form-group">
+      <label for="angka_y">Nilai Y</label>
+      <input
+        required
+        type="number"
+        class="form-control"
+        id="angka_y"
+        name="angka_y"
+        placeholder="Masukkan Nilai Y"
+        min="0"
+        max="99999999"
+      />
+    </div>
+
+    <div id="angka_p-group" class="form-group">
+      <label for="angka_y">Nilai P</label>
+      <input
+        required
+        type="number"
+        class="form-control"
+        id="angka_p"
+        name="angka_p"
+        placeholder="Masukkan Nilai P"
+        min="0"
+        max="99999999"
+      />
+    </div>
+
+    <button
+      type="submit"
+      value="submit"
+      class="btn btn-success"
+      onclick="submitaja()"
+    >
+      Submit
+    </button>
+  </form>
+</div>
+{% endif %} {% endblock %}

@@ -121,6 +121,6 @@ if __name__ == '__main__':
     decrypt_parser.add_argument("file_input", help='Input Stego File')
     args = parser.parse_args()
     if(args.command == "encrypt"):
-        encrypt(args.file_input, args.file_pesan, args.output)
+        encrypt(args.file_input, args.pesan, args.output)
     elif(args.command == "decrypt"):
         print(decrypt(args.file_input))
