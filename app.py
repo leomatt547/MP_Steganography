@@ -9,6 +9,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 ALLOWED_EXTENSIONS_CITRA = set(['png', 'bmp'])
 ALLOWED_EXTENSIONS_VIDEO = set(['avi'])
+ALLOWED_EXTENSIONS_AUDIO = set(['wav'])
 app.config["UPLOAD_FOLDER"]="dump"
 
 def clear_folder():
@@ -34,6 +35,8 @@ def allowed_file(filename):
         return "gambar"
     elif('.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS_VIDEO):
         return "video"
+    elif('.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS_AUDIO):
+        return "audio"
     else:
         return "null" 
 
@@ -271,7 +274,7 @@ def audio_dekripsi_post():
             f.save(os.path.join(app.config["UPLOAD_FOLDER"] ,filename))
             angka_x = int(request.form.get("angka_x"))
             angka_p = int(request.form.get("angka_p"))
-            response = elgamal_audio.dekripsi(filename, angka_x, angka_p)
+            response = elgamal_audio.dekripsi(os.path.join(app.config["UPLOAD_FOLDER"] ,filename), angka_x, angka_p)
             print(response)
             return render_template("audio_dekripsi.html",\
                     encrypt=True\

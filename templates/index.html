@@ -8,21 +8,20 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
+    {% block head %}{% endblock %}
     <style>
-      * {
-        box-sizing: border-box;
-      }
       body {
         font-family: "Lato", sans-serif;
       }
 
+      /*Tab Kiri*/
       /* Style the tab */
       .tab {
         float: left;
         border: 1px solid #ccc;
         background-color: #f1f1f1;
         width: 20%;
-        height: 300px;
+        height: auto;
       }
 
       /* Style the buttons inside the tab */
@@ -57,7 +56,7 @@
         border: 1px solid #ccc;
         width: 80%;
         border-left: none;
-        height: 300px;
+        height: auto;
       }
     </style>
   </head>
@@ -75,9 +74,6 @@
       </button>
       <button class="tablinks" onclick="window.location = '../audio/enkripsi';">
         Penyisipan dalam Audio
-      </button>
-      <button class="tablinks" onclick="window.location = '../file/enkripsi';">
-        Penyisipan dalam File
       </button>
     </div>
   </body>

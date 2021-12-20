@@ -76,7 +76,7 @@ def encrypt(file, pesan, output):
     return str(strnya)
 
 def psnr(perubahan,jumlah_frame):
-    rms = perubahan/jumlah_frame
+    rms = perubahan/(jumlah_frame*8)
     return 20*log10(8/rms)
 
 def decrypt(file):
